@@ -116,7 +116,8 @@ async def remove_background(bot, update):
         disable_web_page_preview=True
     )
     if (update and update.media and (update.photo or (update.document and "image" in update.document.mime_type))):
-        await update.download_media()
+        file_name = IMG_PATH + "_no_bg.png"
+        await update.download_media(file_name)
         await message.edit_text(
             text="Photo downloaded successfully. Now removing background.",
             disable_web_page_preview=True
@@ -124,9 +125,13 @@ async def remove_background(bot, update):
         try:
             REMOVE_BG.remove_background_from_img_file(IMG_PATH)
             await update.reply_document(
-                document=IMG_PATH + "_no_bg.png"
+                document=file_name
             )
             await message.delete()
+            try:
+                os.remove(file_name)
+            except:
+                pass
         except Exception:
             await message.edit_text(
                 text="Something went wrong! May be API limits.",
