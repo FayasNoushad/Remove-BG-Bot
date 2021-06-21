@@ -132,7 +132,8 @@ async def remove_background(bot, update):
                 os.remove(file_name)
             except:
                 pass
-        except Exception:
+        except Exception as error:
+            print(error)
             await message.edit_text(
                 text="Something went wrong! May be API limits.",
                 disable_web_page_preview=True
