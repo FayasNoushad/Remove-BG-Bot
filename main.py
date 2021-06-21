@@ -137,3 +137,5 @@ async def remove_background(bot, update):
                 text="Something went wrong! May be API limits.",
                 disable_web_page_preview=True
             )
+
+FayasNoushad.run()
