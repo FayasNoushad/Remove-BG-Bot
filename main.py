@@ -7,7 +7,7 @@
 import os
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from removebg import RemoveBG
+from removebg import RemoveBg
 
 API = os.environ["REMOVEBG_API"]
 REMOVE_BG = RemoveBg(API, "removebg_error.log")
