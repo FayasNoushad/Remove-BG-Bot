@@ -103,29 +103,49 @@ async def start(bot, update):
         reply_markup=START_BUTTONS
     )
 
-@FayasNoushad.on_message(filters.private & filters.media)
+@FayasNoushad.on_message(filters.private & (filters.photo | filters.document))
 async def remove_background(bot, update):
     if not API:
         await update.reply_text(
             text="Error :- Remove BG Api is error",
+            quote=True,
             disable_web_page_preview=True
         )
         return
+    await update.reply_chat_action("typing")
     message = await update.reply_text(
         text="Analysing",
+        quote=True,
         disable_web_page_preview=True
     )
     if (update and update.media and (update.photo or (update.document and "image" in update.document.mime_type))):
-        file_name = IMG_PATH + "_no_bg.png"
+        file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "image.jpg"
+        new_file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "no_bg.png"
         await update.download_media(file_name)
         await message.edit_text(
             text="Photo downloaded successfully. Now removing background.",
             disable_web_page_preview=True
         )
         try:
-            REMOVE_BG.remove_background_from_img_file(IMG_PATH)
+            new_image = requests.post(
+                "https://api.remove.bg/v1.0/removebg",
+                files={"image_file": open(file_name, "rb")},
+                data={"size": "auto"},
+                headers={"X-Api-Key": API}
+            )
+            if new_image.status_code == 200:
+                with open(f"{new_file_name}", "wb") as image:
+                    image.write(new_image.content)
+            else:
+                await update.reply_to_message.reply_text(
+                    text="API is error.",
+                    quote=True
+                )
+                return
+            await update.reply_chat_action("upload_photo")
             await update.reply_document(
-                document=file_name
+                document=new_file_name,
+                quote=True
             )
             await message.delete()
             try:
@@ -138,5 +158,7 @@ async def remove_background(bot, update):
                 text="Something went wrong! May be API limits.",
                 disable_web_page_preview=True
             )
+    else:
+        await message.edit_text("Media not supported")
 
 FayasNoushad.run()
