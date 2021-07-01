@@ -1,4 +1,3 @@
 pyrogram==1.2.9
 tgcrypto==1.2.2
-removebg==0.04
 requests==2.25.1
