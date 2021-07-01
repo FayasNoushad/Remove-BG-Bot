@@ -64,7 +64,7 @@ ABOUT_BUTTONS = InlineKeyboardMarkup(
         InlineKeyboardButton('Close', callback_data='close')
         ]]
     )
-ERROR_BUTTON = InlineKeyboardMarkup(
+ERROR_BUTTONS = InlineKeyboardMarkup(
         [[
         InlineKeyboardButton('Help', callback_data='help'),
         InlineKeyboardButton('Close', callback_data='close')
@@ -113,7 +113,8 @@ async def remove_background(bot, update):
         await update.reply_text(
             text="Error :- Remove BG Api is error",
             quote=True,
-            disable_web_page_preview=True
+            disable_web_page_preview=True,
+            reply_markup=ERROR_BUTTONS
         )
         return
     await update.reply_chat_action("typing")
@@ -143,7 +144,8 @@ async def remove_background(bot, update):
             else:
                 await update.reply_to_message.reply_text(
                     text="API is error.",
-                    quote=True
+                    quote=True,
+                    reply_markup=ERROR_BUTTONS
                 )
                 return
             await update.reply_chat_action("upload_photo")
@@ -160,9 +162,14 @@ async def remove_background(bot, update):
             print(error)
             await message.edit_text(
                 text="Something went wrong! May be API limits.",
-                disable_web_page_preview=True
+                disable_web_page_preview=True,
+                reply_markup=ERROR_BUTTONS
             )
     else:
-        await message.edit_text("Media not supported")
+        await message.edit_text(
+            text="Media not supported",
+            disable_web_page_preview=True,
+            reply_markup=ERROR_BUTTONS
+        )
 
 FayasNoushad.run()
