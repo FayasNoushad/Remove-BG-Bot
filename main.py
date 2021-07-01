@@ -8,7 +8,6 @@ import os
 import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from removebg import RemoveBg
 
 API = os.environ["REMOVEBG_API"]
 IMG_PATH = "./DOWNLOADS"
