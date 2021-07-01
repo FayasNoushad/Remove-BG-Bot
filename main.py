@@ -10,7 +10,6 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from removebg import RemoveBg
 
 API = os.environ["REMOVEBG_API"]
-REMOVE_BG = RemoveBg(API, "removebg_error.log")
 IMG_PATH = "./DOWNLOADS" + "dl_image.jpg"
 
 FayasNoushad = Client(
