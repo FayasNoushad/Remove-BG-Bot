@@ -120,7 +120,7 @@ async def remove_background(bot, update):
     if (update and update.media and (update.photo or (update.document and "image" in update.document.mime_type))):
         file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "image.jpg"
         new_file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "no_bg.png"
-        await update.download_media(file_name)
+        await update.download(file_name)
         await message.edit_text(
             text="Photo downloaded successfully. Now removing background.",
             disable_web_page_preview=True
