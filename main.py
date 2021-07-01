@@ -5,6 +5,7 @@
 # License -> https://github.com/FayasNoushad/Remove-BG-Bot/blob/main/LICENSE
 
 import os
+import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from removebg import RemoveBg
