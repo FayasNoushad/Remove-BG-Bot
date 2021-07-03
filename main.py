@@ -142,7 +142,7 @@ async def remove_background(bot, update):
                 with open(f"{new_file_name}", "wb") as image:
                     image.write(new_image.content)
             else:
-                await update.reply_to_message.reply_text(
+                await update.reply_text(
                     text="API is error.",
                     quote=True,
                     reply_markup=ERROR_BUTTONS
