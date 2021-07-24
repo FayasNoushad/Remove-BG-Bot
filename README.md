@@ -17,6 +17,7 @@ License -> https://github.com/FayasNoushad/Remove-BG-Bot/blob/main/LICENSE
 
 <details>
   <summary><b>Deploy on Heroku</b></summary>
+<br/>
 
 <p align="left">
   <a href="https://heroku.com/deploy?template=https://github.com/FayasNoushad/Remove-BG-Bot">
@@ -28,6 +29,7 @@ License -> https://github.com/FayasNoushad/Remove-BG-Bot/blob/main/LICENSE
 
 <details>
   <summary><b>Deploy in your vps</b></summary>
+<br/>
 
 ```sh
 git clone https://github.com/FayasNoushad/Remove-BG-Bot
@@ -45,6 +47,7 @@ python3 main.py
 
 <details>
   <summary><b>See variables</b></summary>
+<br/>
 
 - `API_HASH` Your API Hash from my.telegram.org
 - `API_ID` Your API ID from my.telegram.org
