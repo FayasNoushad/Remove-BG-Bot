@@ -9,7 +9,7 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-API = os.environ["REMOVEBG_API"]
+REMOVEBG_API = os.environ["REMOVEBG_API"]
 IMG_PATH = "./DOWNLOADS"
 
 FayasNoushad = Client(
@@ -173,7 +173,7 @@ def removebg_image(file):
         "https://api.remove.bg/v1.0/removebg",
         files={"image_file": open(file_name, "rb")},
         data={"size": "auto"},
-        headers={"X-Api-Key": API}
+        headers={"X-Api-Key": REMOVEBG_API}
     )
 
 
