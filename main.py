@@ -132,12 +132,7 @@ async def remove_background(bot, update):
             disable_web_page_preview=True
         )
         try:
-            new_image = requests.post(
-                "https://api.remove.bg/v1.0/removebg",
-                files={"image_file": open(file_name, "rb")},
-                data={"size": "auto"},
-                headers={"X-Api-Key": API}
-            )
+            new_image = new_image(file_name)
             if new_image.status_code == 200:
                 with open(f"{new_file_name}", "wb") as image:
                     image.write(new_image.content)
@@ -171,5 +166,15 @@ async def remove_background(bot, update):
             disable_web_page_preview=True,
             reply_markup=ERROR_BUTTONS
         )
+
+
+def removebg_image(file):
+    return requests.post(
+        "https://api.remove.bg/v1.0/removebg",
+        files={"image_file": open(file_name, "rb")},
+        data={"size": "auto"},
+        headers={"X-Api-Key": API}
+    )
+
 
 FayasNoushad.run()
