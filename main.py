@@ -124,15 +124,16 @@ async def remove_background(bot, update):
         quote=True,
         disable_web_page_preview=True
     )
-    if (update and update.media and (update.photo or (update.document and "image" in update.document.mime_type))):
-        file_name = PATH + "/" + str(update.from_user.id) + "/" + "image.jpg"
-        new_file_name = PATH + "/" + str(update.from_user.id) + "/" + "no_bg.png"
-        await update.download(file_name)
-        await message.edit_text(
-            text="Photo downloaded successfully. Now removing background.",
-            disable_web_page_preview=True
-        )
-        try:
+    if update and update.media:
+        new_file = PATH + "/" + str(update.from_user.id) + "/"
+        if update.photo or (update.document and "image" in update.document.mime_type):
+            file_name = new_file + "image.jpg"
+            new_file_name = new_file + "no_bg.png"
+            await update.download(file_name)
+            await message.edit_text(
+                text="Photo downloaded successfully. Now removing background.",
+                disable_web_page_preview=True
+            )
             new_image = removebg_image(file_name)
             if new_image.status_code == 200:
                 with open(f"{new_file_name}", "wb") as image:
@@ -145,22 +146,23 @@ async def remove_background(bot, update):
                 )
                 return
             await update.reply_chat_action("upload_photo")
-            await update.reply_document(
-                document=new_file_name,
-                quote=True
-            )
-            await message.delete()
             try:
-                os.remove(file_name)
-            except:
-                pass
-        except Exception as error:
-            print(error)
-            await message.edit_text(
-                text="Something went wrong! May be API limits.",
-                disable_web_page_preview=True,
-                reply_markup=ERROR_BUTTONS
-            )
+                await update.reply_document(
+                    document=new_file_name,
+                    quote=True
+                )
+                await message.delete()
+                try:
+                    os.remove(file_name)
+                except:
+                    pass
+            except Exception as error:
+                print(error)
+                await message.edit_text(
+                    text="Something went wrong! May be API limits.",
+                    disable_web_page_preview=True,
+                    reply_markup=ERROR_BUTTONS
+                ) 
     else:
         await message.edit_text(
             text="Media not supported",
