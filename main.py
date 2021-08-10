@@ -10,6 +10,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 REMOVEBG_API = os.environ["REMOVEBG_API"]
+UNSCREEN_API = os.environ["UNSCREEN_API"]
 IMG_PATH = "./DOWNLOADS"
 
 FayasNoushad = Client(
@@ -109,7 +110,7 @@ async def start(bot, update):
 
 @FayasNoushad.on_message(filters.private & (filters.photo | filters.document))
 async def remove_background(bot, update):
-    if not API:
+    if not REMOVEBG_API:
         await update.reply_text(
             text="Error :- Remove BG Api is error",
             quote=True,
@@ -124,8 +125,8 @@ async def remove_background(bot, update):
         disable_web_page_preview=True
     )
     if (update and update.media and (update.photo or (update.document and "image" in update.document.mime_type))):
-        file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "image.jpg"
-        new_file_name = IMG_PATH + "/" + str(update.from_user.id) + "/" + "no_bg.png"
+        file_name = PATH + "/" + str(update.from_user.id) + "/" + "image.jpg"
+        new_file_name = PATH + "/" + str(update.from_user.id) + "/" + "no_bg.png"
         await update.download(file_name)
         await message.edit_text(
             text="Photo downloaded successfully. Now removing background.",
@@ -174,6 +175,14 @@ def removebg_image(file):
         files={"image_file": open(file_name, "rb")},
         data={"size": "auto"},
         headers={"X-Api-Key": REMOVEBG_API}
+    )
+
+
+def removebg_video(file):
+    return requests.post(
+        "https://api.unscreen.com/v1.0/videos",
+        files={"video_file": open(file, "rb")},
+        headers={"X-Api-Key": UNSCREEN_API}
     )
 
 
