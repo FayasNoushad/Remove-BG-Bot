@@ -14,7 +14,12 @@
             "description": "Your API_HASH from https://my.telegram.org/apps"
         },
         "REMOVEBG_API": {
-            "description": "Your remove bg api from remove.bg/api"
+            "description": "Your remove bg api from remove.bg/api",
+            "required": false
+        },
+        "UNSCREEN_API": {
+            "description": "Your unscreen api from api.unscreen.com",
+            "required": false
         }
     },
     "buildpacks": [{"url": "heroku/python"}]
