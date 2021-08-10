@@ -9,8 +9,8 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-REMOVEBG_API = os.environ["REMOVEBG_API"]
-UNSCREEN_API = os.environ["UNSCREEN_API"]
+REMOVEBG_API = os.environ("REMOVEBG_API", "")
+UNSCREEN_API = os.environ("UNSCREEN_API", "")
 IMG_PATH = "./DOWNLOADS"
 
 FayasNoushad = Client(
