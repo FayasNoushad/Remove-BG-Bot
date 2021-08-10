@@ -132,7 +132,7 @@ async def remove_background(bot, update):
             disable_web_page_preview=True
         )
         try:
-            new_image = new_image(file_name)
+            new_image = removebg_image(file_name)
             if new_image.status_code == 200:
                 with open(f"{new_file_name}", "wb") as image:
                     image.write(new_image.content)
