@@ -21,7 +21,7 @@ FayasNoushad = Client(
 )
 
 START_TEXT = """
-Hello {}, I am a photo background remover bot. Send me a photo I will send the photo without background.
+Hello {}, I am a media background remover bot. Send me a photo I will send the photo without background.
 
 Made by @FayasNoushad
 """
