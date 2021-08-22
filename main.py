@@ -9,8 +9,8 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-REMOVEBG_API = os.environ("REMOVEBG_API", "")
-UNSCREEN_API = os.environ("UNSCREEN_API", "")
+REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
+UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
 IMG_PATH = "./DOWNLOADS"
 
 FayasNoushad = Client(
@@ -108,7 +108,7 @@ async def start(bot, update):
         reply_markup=START_BUTTONS
     )
 
-@FayasNoushad.on_message(filters.private & (filters.photo | filters.document))
+@FayasNoushad.on_message(filters.private & (filters.photo | filters.video | filters.document))
 async def remove_background(bot, update):
     if not REMOVEBG_API:
         await update.reply_text(
