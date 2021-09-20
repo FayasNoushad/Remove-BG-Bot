@@ -11,7 +11,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
 UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
-IMG_PATH = "./DOWNLOADS"
+PATH = "./DOWNLOADS/"
 
 FayasNoushad = Client(
     "Remove Background Bot",
@@ -125,7 +125,7 @@ async def remove_background(bot, update):
         disable_web_page_preview=True
     )
     if update and update.media:
-        new_file = PATH + "/" + str(update.from_user.id) + "/"
+        new_file = PATH + str(update.from_user.id) + "/"
         if update.photo or (update.document and "image" in update.document.mime_type):
             file_name = new_file + "image.jpg"
             new_file_name = new_file + "no_bg.png"
