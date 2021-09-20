@@ -127,16 +127,15 @@ async def remove_background(bot, update):
     if update and update.media:
         new_file = PATH + str(update.from_user.id) + "/"
         if update.photo or (update.document and "image" in update.document.mime_type):
-            file_name = new_file + "image.jpg"
             new_file_name = new_file + "no_bg.png"
-            await update.download(file_name)
+            file_name = await update.download()
             await message.edit_text(
                 text="Photo downloaded successfully. Now removing background.",
                 disable_web_page_preview=True
             )
             new_image = removebg_image(file_name)
             if new_image.status_code == 200:
-                with open(f"{new_file_name}", "wb") as image:
+                with open(new_file_name, "wb") as image:
                     image.write(new_image.content)
             else:
                 await update.reply_text(
@@ -171,7 +170,7 @@ async def remove_background(bot, update):
         )
 
 
-def removebg_image(file):
+def removebg_image(file_name):
     return requests.post(
         "https://api.remove.bg/v1.0/removebg",
         files={"image_file": open(file_name, "rb")},
