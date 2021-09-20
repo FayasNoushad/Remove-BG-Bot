@@ -17,7 +17,7 @@ FayasNoushad = Client(
     "Remove Background Bot",
     bot_token = os.environ["BOT_TOKEN"],
     api_id = int(os.environ["API_ID"]),
-    api_hash = os.environ["API_HASH"],
+    api_hash = os.environ["API_HASH"]
 )
 
 START_TEXT = """
@@ -120,7 +120,7 @@ async def remove_background(bot, update):
         return
     await update.reply_chat_action("typing")
     message = await update.reply_text(
-        text="Analysing",
+        text="Processing",
         quote=True,
         disable_web_page_preview=True
     )
@@ -128,12 +128,12 @@ async def remove_background(bot, update):
         new_file = PATH + str(update.from_user.id) + "/"
         if update.photo or (update.document and "image" in update.document.mime_type):
             new_file_name = new_file + "no_bg.png"
-            file_name = await update.download()
+            file = await update.download(PATH+str(update.from_user.id))
             await message.edit_text(
                 text="Photo downloaded successfully. Now removing background.",
                 disable_web_page_preview=True
             )
-            new_image = removebg_image(file_name)
+            new_image = removebg_image(file)
             if new_image.status_code == 200:
                 with open(new_file_name, "wb") as image:
                     image.write(new_image.content)
@@ -152,7 +152,7 @@ async def remove_background(bot, update):
                 )
                 await message.delete()
                 try:
-                    os.remove(file_name)
+                    os.remove(file)
                 except:
                     pass
             except Exception as error:
@@ -170,10 +170,10 @@ async def remove_background(bot, update):
         )
 
 
-def removebg_image(file_name):
+def removebg_image(file):
     return requests.post(
         "https://api.remove.bg/v1.0/removebg",
-        files={"image_file": open(file_name, "rb")},
+        files={"image_file": open(file, "rb")},
         data={"size": "auto"},
         headers={"X-Api-Key": REMOVEBG_API}
     )
