@@ -124,47 +124,42 @@ async def remove_background(bot, update):
         quote=True,
         disable_web_page_preview=True
     )
-    if update and update.media:
-        new_file = PATH + str(update.from_user.id) + "/"
-        if update.photo or (update.document and "image" in update.document.mime_type):
-            new_file_name = new_file + "no_bg.png"
-            file = await update.download(PATH+str(update.from_user.id))
-            await message.edit_text(
-                text="Photo downloaded successfully. Now removing background.",
-                disable_web_page_preview=True
-            )
-            new_image = removebg_image(file)
-            if new_image.status_code == 200:
-                with open(new_file_name, "wb") as image:
-                    image.write(new_image.content)
-            else:
-                await update.reply_text(
-                    text="API is error.",
-                    quote=True,
-                    reply_markup=ERROR_BUTTONS
-                )
-                return
-            await update.reply_chat_action("upload_photo")
-            try:
-                await update.reply_document(
-                    document=new_file_name,
-                    quote=True
-                )
-                await message.delete()
-                try:
-                    os.remove(file)
-                except:
-                    pass
-            except Exception as error:
-                print(error)
-                await message.edit_text(
-                    text="Something went wrong! May be API limits.",
-                    disable_web_page_preview=True,
-                    reply_markup=ERROR_BUTTONS
-                ) 
-    else:
+    new_file = PATH + str(update.from_user.id) + "/"
+    new_file_name = new_file + "no_bg."
+    if update.photo or (update.document and "image" in update.document.mime_type):
+        new_file_name += "png"
+        file = await update.download(PATH+str(update.from_user.id))
         await message.edit_text(
-            text="Media not supported",
+            text="Photo downloaded successfully. Now removing background.",
+            disable_web_page_preview=True
+        )
+        new_document = removebg_image(file)
+    elif update.video or (update.document and "video" in update.document.mime_type):
+        new_file_name += "webm"
+        file = await update.download(PATH+str(update.from_user.id))
+        await message.edit_text(
+            text="Photo downloaded successfully. Now removing background.",
+            disable_web_page_preview=True
+        )
+        new_document = removebg_video(file)
+    else:
+        await message.edit_text(text="Media not supported", disable_web_page_preview=True, reply_markup=ERROR_BUTTONS)
+    if new_document.status_code == 200:
+        with open(new_file_name, "wb") as file:
+            file.write(new_document.content)
+        await update.reply_chat_action("upload_document")
+    else:
+        await message.edit_text(text="API is error.", reply_markup=ERROR_BUTTONS)
+        return
+    try:
+        await update.reply_document(document=new_file_name, quote=True)
+        try:
+            os.remove(file)
+        except:
+            pass
+    except Exception as error:
+        await message.edit_text(
+            text=f"Error:- `{error}`",
             disable_web_page_preview=True,
             reply_markup=ERROR_BUTTONS
         )
