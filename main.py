@@ -9,75 +9,85 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+
 REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
 UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
 PATH = "./DOWNLOADS/"
 
-FayasNoushad = Client(
+Bot = Client(
     "Remove Background Bot",
     bot_token = os.environ["BOT_TOKEN"],
     api_id = int(os.environ["API_ID"]),
     api_hash = os.environ["API_HASH"]
 )
 
-START_TEXT = """
-Hello {}, I am a media background remover bot. Send me a photo I will send the photo without background.
+START_TEXT = """Hello {},
+I am a media background remover bot. Send me a photo I will send the photo without background.
 
-Made by @FayasNoushad
-"""
-HELP_TEXT = """
+Made by @FayasNoushad"""
+HELP_TEXT = """**More Help**
+
 - Just send me a photo
 - I will download it
 - I will send the photo without background
 
-Made by @FayasNoushad
-"""
+Made by @FayasNoushad"""
 ABOUT_TEXT = """
 - **Bot :** `Backround Remover Bot`
 - **Creator :** [Fayas](https://telegram.me/TheFayas)
 - **Channel :** [Fayas Noushad](https://telegram.me/FayasNoushad)
 - **Source :** [Click here](https://github.com/FayasNoushad/Remove-BG-Bot/tree/main)
 - **Language :** [Python3](https://python.org)
-- **Library :** [Pyrogram](https://pyrogram.org)
-- **Server :** [Heroku](https://heroku.com)
-"""
+- **Library :** [Pyrogram](https://pyrogram.org)"""
 START_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Channel', url='https://telegram.me/FayasNoushad'),
-        InlineKeyboardButton('Feedback', url='https://telegram.me/TheFayas')
-        ],[
-        InlineKeyboardButton('Help', callback_data='help'),
-        InlineKeyboardButton('About', callback_data='about'),
-        InlineKeyboardButton('Close', callback_data='close')
-        ]]
-    )
+    [
+        [
+            InlineKeyboardButton('Channel', url='https://telegram.me/FayasNoushad'),
+            InlineKeyboardButton('Feedback', url='https://telegram.me/TheFayas')
+        ],
+        [
+            InlineKeyboardButton('Help', callback_data='help'),
+            InlineKeyboardButton('About', callback_data='about'),
+            InlineKeyboardButton('Close', callback_data='close')
+        ]
+    ]
+)
 HELP_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Home', callback_data='home'),
-        InlineKeyboardButton('About', callback_data='about'),
-        InlineKeyboardButton('Close', callback_data='close')
-        ]]
-    )
+    [
+        [
+            InlineKeyboardButton('Home', callback_data='home'),
+            InlineKeyboardButton('About', callback_data='about'),
+            InlineKeyboardButton('Close', callback_data='close')
+        ]
+    ]
+)
 ABOUT_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Home', callback_data='home'),
-        InlineKeyboardButton('Help', callback_data='help'),
-        InlineKeyboardButton('Close', callback_data='close')
-        ]]
-    )
+    [
+        [
+            InlineKeyboardButton('Home', callback_data='home'),
+            InlineKeyboardButton('Help', callback_data='help'),
+            InlineKeyboardButton('Close', callback_data='close')
+        ]
+    ]
+)
 ERROR_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Help', callback_data='help'),
-        InlineKeyboardButton('Close', callback_data='close')
-        ]]
-    )
+    [
+        [
+            InlineKeyboardButton('Help', callback_data='help'),
+            InlineKeyboardButton('Close', callback_data='close')
+        ]
+    ]
+)
 BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Join Updates Channel', url='https://telegram.me/FayasNoushad')
-        ]]
-    )
+    [
+        [
+            InlineKeyboardButton('Join Updates Channel', url='https://telegram.me/FayasNoushad')
+        ]
+    ]
+)
 
-@FayasNoushad.on_callback_query()
+
+@Bot.on_callback_query()
 async def cb_data(bot, update):
     if update.data == "home":
         await update.message.edit_text(
@@ -100,7 +110,8 @@ async def cb_data(bot, update):
     else:
         await update.message.delete()
 
-@FayasNoushad.on_message(filters.private & filters.command(["start"]))
+
+@Bot.on_message(filters.private & filters.command(["start"]))
 async def start(bot, update):
     await update.reply_text(
         text=START_TEXT.format(update.from_user.mention),
@@ -108,7 +119,8 @@ async def start(bot, update):
         reply_markup=START_BUTTONS
     )
 
-@FayasNoushad.on_message(filters.private & (filters.photo | filters.video | filters.document))
+
+@Bot.on_message(filters.private & (filters.photo | filters.video | filters.document))
 async def remove_background(bot, update):
     if not REMOVEBG_API:
         await update.reply_text(
@@ -182,4 +194,4 @@ def removebg_video(file):
     )
 
 
-FayasNoushad.run()
+Bot.run()
