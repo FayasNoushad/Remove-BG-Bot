@@ -1,9 +1,3 @@
-# Made with python3
-# (C) @FayasNoushad
-# Copyright permission under MIT License
-# All rights reserved by FayasNoushad
-# License -> https://github.com/FayasNoushad/Remove-BG-Bot/blob/main/LICENSE
-
 import os
 import requests
 from pyrogram import Client, filters
