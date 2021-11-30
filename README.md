@@ -1,23 +1,5 @@
-```
-Made with Python3
-(C) @FayasNoushad
-Copyright permission under MIT License
-License -> https://github.com/FayasNoushad/Remove-BG-Bot/blob/main/LICENSE
-```
-
----
-
-## Deploy
-
-```sh
-git clone https://github.com/FayasNoushad/Remove-BG-Bot.git
-cd Remove-BG-Bot
-pip3 install -r requirements.txt
-# <Create Variables appropriately>
-python3 main.py
-```
-
-</details>
+# Remove BG Bot
+A telegram photos or videos background remover bot
 
 ---
 
@@ -31,11 +13,17 @@ python3 main.py
 
 ---
 
-## Credits
+## Commands
 
-- [Fayas Noushad](https://github.com/FayasNoushad)
-- [Pyrogram](https://github.com/pyrogram/pyrogram)
-- [Remove BG](https://removebg.com)
-- [Unscreen](https://unscreen.com)
+```
+start - For start the bot
+```
+
+---
+
+## APIs
+
+- [Remove BG API](https://removebg.com/api)
+- [Unscreen API](https://unscreen.com/api)
 
 ---
