@@ -10,9 +10,9 @@ PATH = "./DOWNLOADS/"
 
 Bot = Client(
     "Remove Background Bot",
-    bot_token = os.environ["BOT_TOKEN"],
-    api_id = int(os.environ["API_ID"]),
-    api_hash = os.environ["API_HASH"]
+    bot_token=os.environ.get("BOT_TOKEN"),
+    api_id=int(os.environ.get("API_ID")),
+    api_hash=os.environ.get("API_HASH")
 )
 
 START_TEXT = """Hello {},
@@ -26,7 +26,8 @@ HELP_TEXT = """**More Help**
 - I will send the photo without background
 
 Made by @FayasNoushad"""
-ABOUT_TEXT = """
+ABOUT_TEXT = """**About Me**
+
 - **Bot :** `Backround Remover Bot`
 - **Creator :** [Fayas](https://telegram.me/TheFayas)
 - **Channel :** [Fayas Noushad](https://telegram.me/FayasNoushad)
@@ -84,34 +85,65 @@ BUTTONS = InlineKeyboardMarkup(
 @Bot.on_callback_query()
 async def cb_data(bot, update):
     if update.data == "home":
+        await start(bot, update, cb=True)
+    elif update.data == "help":
+        await help(bot, update, cb=True)
+    elif update.data == "about":
+        await about(bot, update, cb=True)
+    else:
+        await update.message.delete()
+
+
+@Bot.on_message(filters.private & filters.command(["start"]))
+async def start(bot, update, cb=False):
+    text=START_TEXT.format(update.from_user.mention)
+    if cb:
         await update.message.edit_text(
-            text=START_TEXT.format(update.from_user.mention),
+            text=text,
             reply_markup=START_BUTTONS,
             disable_web_page_preview=True
         )
-    elif update.data == "help":
+    else:
+        await update.reply_text(
+            text=text,
+            disable_web_page_preview=True,
+            reply_markup=START_BUTTONS,
+            quote=True
+        )
+
+
+@Bot.on_message(filters.private & filters.command(["help"]))
+async def help(bot, update, cb=False):
+    if cb:
         await update.message.edit_text(
             text=HELP_TEXT,
             reply_markup=HELP_BUTTONS,
             disable_web_page_preview=True
         )
-    elif update.data == "about":
+    else:
+        await update.reply_text(
+            text=HELP_TEXT,
+            reply_markup=HELP_BUTTONS,
+            disable_web_page_preview=True,
+            quote=True
+        )
+
+
+@Bot.on_message(filters.private & filters.command(["help"]))
+async def help(bot, update, cb=False):
+    if cb:
         await update.message.edit_text(
             text=ABOUT_TEXT,
             reply_markup=ABOUT_BUTTONS,
             disable_web_page_preview=True
         )
     else:
-        await update.message.delete()
-
-
-@Bot.on_message(filters.private & filters.command(["start"]))
-async def start(bot, update):
-    await update.reply_text(
-        text=START_TEXT.format(update.from_user.mention),
-        disable_web_page_preview=True,
-        reply_markup=START_BUTTONS
-    )
+        await update.reply_text(
+            text=ABOUT_TEXT,
+            reply_markup=ABOUT_BUTTONS,
+            disable_web_page_preview=True,
+            quote=True
+        )
 
 
 @Bot.on_message(filters.private & (filters.photo | filters.video | filters.document))
@@ -131,34 +163,60 @@ async def remove_background(bot, update):
         disable_web_page_preview=True
     )
     new_file = PATH + str(update.from_user.id) + "/"
-    new_file_name = new_file + "no_bg."
-    if update.photo or (update.document and "image" in update.document.mime_type):
-        new_file_name += "png"
-        file = await update.download(PATH+str(update.from_user.id))
-        await message.edit_text(
-            text="Photo downloaded successfully. Now removing background.",
-            disable_web_page_preview=True
-        )
-        new_document = removebg_image(file)
-    elif update.video or (update.document and "video" in update.document.mime_type):
-        new_file_name += "webm"
-        file = await update.download(PATH+str(update.from_user.id))
-        await message.edit_text(
-            text="Photo downloaded successfully. Now removing background.",
-            disable_web_page_preview=True
-        )
-        new_document = removebg_video(file)
+    new_file_name = new_file + "no_bg"
+    if update.photo or (
+        update.document and "image" in update.document.mime_type
+    ):
+        new_file_name += ".png"
+        try:
+            file = await update.download(PATH+str(update.from_user.id))
+            await message.edit_text(
+                text="Photo downloaded successfully. Now removing background.",
+                disable_web_page_preview=True
+            )
+            new_document = removebg_image(file)
+        except Exception as error:
+            await message.edit_text(
+                text=error,
+                disable_web_page_preview=True
+            )
+    elif update.video or (
+        update.document and "video" in update.document.mime_type
+    ):
+        new_file_name += ".webm"
+        try:
+            file = await update.download(PATH+str(update.from_user.id))
+            await message.edit_text(
+                text="Video downloaded successfully. Now removing background.",
+                disable_web_page_preview=True
+            )
+            new_document = removebg_video(file)
+        except Exception as error:
+            await message.edit_text(
+                text=error,
+                disable_web_page_preview=True
+            )
     else:
-        await message.edit_text(text="Media not supported", disable_web_page_preview=True, reply_markup=ERROR_BUTTONS)
+        await message.edit_text(
+            text="Media not supported",
+            disable_web_page_preview=True,
+            reply_markup=ERROR_BUTTONS
+        )
     if new_document.status_code == 200:
         with open(new_file_name, "wb") as file:
             file.write(new_document.content)
         await update.reply_chat_action("upload_document")
     else:
-        await message.edit_text(text="API is error.", reply_markup=ERROR_BUTTONS)
+        await message.edit_text(
+            text="API is error.",
+            reply_markup=ERROR_BUTTONS
+        )
         return
     try:
-        await update.reply_document(document=new_file_name, quote=True)
+        await update.reply_document(
+            document=new_file_name,
+            quote=True
+        )
         try:
             os.remove(file)
         except:
