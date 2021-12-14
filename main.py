@@ -6,7 +6,6 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
 UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
-PATH = "./DOWNLOADS/"
 
 Bot = Client(
     "Remove Background Bot",
@@ -162,54 +161,51 @@ async def remove_background(bot, update):
         quote=True,
         disable_web_page_preview=True
     )
-    new_file = PATH + str(update.from_user.id) + "/"
-    new_file_name = new_file + "no_bg"
-    if update.photo or (
-        update.document and "image" in update.document.mime_type
-    ):
-        new_file_name += ".png"
-        try:
-            file = await update.download(PATH+str(update.from_user.id))
+    try:
+        new_file_name = f"./{str(update.from_user.id)}"
+        if update.photo or (
+            update.document and "image" in update.document.mime_type
+        ):
+            new_file_name += ".png"
+            file = await update.download()
             await message.edit_text(
                 text="Photo downloaded successfully. Now removing background.",
                 disable_web_page_preview=True
             )
             new_document = removebg_image(file)
-        except Exception as error:
-            await message.edit_text(
-                text=error,
-                disable_web_page_preview=True
-            )
-    elif update.video or (
-        update.document and "video" in update.document.mime_type
-    ):
-        new_file_name += ".webm"
-        try:
-            file = await update.download(PATH+str(update.from_user.id))
+        elif update.video or (
+            update.document and "video" in update.document.mime_type
+        ):
+            new_file_name += ".webm"
+            file = await update.download()
             await message.edit_text(
                 text="Video downloaded successfully. Now removing background.",
                 disable_web_page_preview=True
             )
             new_document = removebg_video(file)
-        except Exception as error:
+        else:
             await message.edit_text(
-                text=error,
-                disable_web_page_preview=True
+                text="Media not supported",
+                disable_web_page_preview=True,
+                reply_markup=ERROR_BUTTONS
             )
-    else:
+        try:
+            os.remove(file)
+        except:
+            pass
+    except Exception as error:
         await message.edit_text(
-            text="Media not supported",
-            disable_web_page_preview=True,
-            reply_markup=ERROR_BUTTONS
+            text=error,
+            disable_web_page_preview=True
         )
-    if new_document.status_code == 200:
+    try:
         with open(new_file_name, "wb") as file:
             file.write(new_document.content)
         await update.reply_chat_action("upload_document")
-    else:
+    except Exception as error:
         await message.edit_text(
-            text="API is error.",
-            reply_markup=ERROR_BUTTONS
+           text=error,
+           reply_markup=ERROR_BUTTONS
         )
         return
     try:
