@@ -3,7 +3,6 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-
 REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
 UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
 
@@ -128,8 +127,8 @@ async def help(bot, update, cb=False):
         )
 
 
-@Bot.on_message(filters.private & filters.command(["help"]))
-async def help(bot, update, cb=False):
+@Bot.on_message(filters.private & filters.command(["about"]))
+async def about(bot, update, cb=False):
     if cb:
         await update.message.edit_text(
             text=ABOUT_TEXT,
