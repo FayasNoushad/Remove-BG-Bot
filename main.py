@@ -3,6 +3,7 @@ import requests
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+
 REMOVEBG_API = os.environ.get("REMOVEBG_API", "")
 UNSCREEN_API = os.environ.get("UNSCREEN_API", "")
 
@@ -14,29 +15,32 @@ Bot = Client(
 )
 
 START_TEXT = """Hello {},
-I am a media background remover bot. Send me a photo I will send the photo without background.
+I am a media background remover bot. \
+Send me a photo I will send the photo without background.
 
 Made by @FayasNoushad"""
-HELP_TEXT = """**More Help**
 
-- Just send me a photo
+HELP_TEXT = """--**More Help**--
+
+- Just send me a photo or video
 - I will download it
-- I will send the photo without background
+- I will send the photo or video without background
 
 Made by @FayasNoushad"""
+
 ABOUT_TEXT = """**About Me**
 
 - **Bot :** `Backround Remover Bot`
-- **Creator :** [Fayas](https://telegram.me/TheFayas)
+- **Developer :** [Fayas](https://github.com/FayasNoushad)
 - **Channel :** [Fayas Noushad](https://telegram.me/FayasNoushad)
-- **Source :** [Click here](https://github.com/FayasNoushad/Remove-BG-Bot/tree/main)
+- **Source :** [Click here](https://github.com/FayasNoushad/Remove-BG-Bot)
 - **Language :** [Python3](https://python.org)
 - **Library :** [Pyrogram](https://pyrogram.org)"""
+
 START_BUTTONS = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton('Channel', url='https://telegram.me/FayasNoushad'),
-            InlineKeyboardButton('Feedback', url='https://telegram.me/TheFayas')
+            InlineKeyboardButton('Join Channel', url='https://telegram.me/FayasNoushad')
         ],
         [
             InlineKeyboardButton('Help', callback_data='help'),
@@ -45,6 +49,7 @@ START_BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
+
 HELP_BUTTONS = InlineKeyboardMarkup(
     [
         [
@@ -54,6 +59,7 @@ HELP_BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
+
 ABOUT_BUTTONS = InlineKeyboardMarkup(
     [
         [
@@ -63,6 +69,7 @@ ABOUT_BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
+
 ERROR_BUTTONS = InlineKeyboardMarkup(
     [
         [
@@ -71,10 +78,11 @@ ERROR_BUTTONS = InlineKeyboardMarkup(
         ]
     ]
 )
+
 BUTTONS = InlineKeyboardMarkup(
     [
         [
-            InlineKeyboardButton('Join Updates Channel', url='https://telegram.me/FayasNoushad')
+            InlineKeyboardButton('Join Channel', url='https://telegram.me/FayasNoushad')
         ]
     ]
 )
@@ -146,9 +154,9 @@ async def about(bot, update, cb=False):
 
 @Bot.on_message(filters.private & (filters.photo | filters.video | filters.document))
 async def remove_background(bot, update):
-    if not REMOVEBG_API:
+    if not (REMOVEBG_API or UNSCREEN_API):
         await update.reply_text(
-            text="Error :- Remove BG Api is error",
+            text="Error :- API not found",
             quote=True,
             disable_web_page_preview=True,
             reply_markup=ERROR_BUTTONS
@@ -162,8 +170,10 @@ async def remove_background(bot, update):
     )
     try:
         new_file_name = f"./{str(update.from_user.id)}"
-        if update.photo or (
-            update.document and "image" in update.document.mime_type
+        if (
+            update.photo or (
+                update.document and "image" in update.document.mime_type
+            )
         ):
             new_file_name += ".png"
             file = await update.download()
@@ -172,8 +182,10 @@ async def remove_background(bot, update):
                 disable_web_page_preview=True
             )
             new_document = removebg_image(file)
-        elif update.video or (
-            update.document and "video" in update.document.mime_type
+        elif (
+            update.video or (
+                update.document and "video" in update.document.mime_type
+            )
         ):
             new_file_name += ".webm"
             file = await update.download()
@@ -213,7 +225,7 @@ async def remove_background(bot, update):
             quote=True
         )
         try:
-            os.remove(file)
+            os.remove(new_file_name)
         except:
             pass
     except Exception as error:
